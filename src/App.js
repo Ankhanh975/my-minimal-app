@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { Platform, Text, View, StyleSheet, ScrollView } from 'react-native';
 import GPS from './GPS';
 import AllSensors from './AllSensors'; // Add this import
-
+import LightSensorComponent from './LightSensor'; // Import the LightSensor component
 export default function App() {
    return (
     <View style={{ flex: 1}}>
       <ScrollView contentContainerStyle={styles.container}>
         <AllSensors /> 
+        <LightSensorComponent /> 
         <GPS />
+
       </ScrollView>
     </View>
   );

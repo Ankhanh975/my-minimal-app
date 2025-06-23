@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Magnetometer, Barometer, DeviceMotion } from 'expo-sensors';
 import { VectorVisualize, OrientationVisualize, MagnitudeVisualize } from './ThreeJS';
 
@@ -103,14 +103,13 @@ export default class AllSensors extends React.Component {
           </Text>
 
           <Text style={styles.sectionHeader}>Rotation (degrees, relative): </Text>
-          <Button title="Reset Rotation" onPress={this.handleResetRotation} />
-          <Text style={styles.label}>α: <Text style={styles.value}>{(relAlpha * 57.2958).toFixed(2)}</Text></Text>
-          <Text style={styles.label}>β: <Text style={styles.value}>{(relBeta * 57.2958).toFixed(2)}</Text></Text>
-          <Text style={styles.label}>γ: <Text style={styles.value}>{(relGamma * 57.2958).toFixed(2)}</Text></Text>
+          <TouchableOpacity style={styles.button} onPress={this.handleResetRotation}>
+            <Text style={styles.buttonText}>Reset Rotation</Text>
+          </TouchableOpacity>
+          <Text style={styles.label}>α: <Text style={styles.value}>{(relAlpha * 57.2958).toFixed(2)}°</Text></Text>
+          <Text style={styles.label}>β: <Text style={styles.value}>{(relBeta * 57.2958).toFixed(2)}°</Text></Text>
+          <Text style={styles.label}>γ: <Text style={styles.value}>{(relGamma * 57.2958).toFixed(2)}°</Text></Text>
           <OrientationVisualize x={relAlpha} y={relBeta} z={relGamma} />
-          <Text style={styles.label}>
-            Magnitude: <Text style={styles.value}>{rotationMag.toFixed(2)}</Text>
-          </Text>
 
           <Text style={styles.sectionHeader}>Rotation Rate (degrees/s): </Text>
           <Text style={styles.label}>α: <Text style={styles.value}>{(rAlpha * 57.2958).toFixed(2)}</Text></Text>
@@ -220,5 +219,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8ff',
     borderRadius: 8,
     lineHeight: 20,
+  },
+  button: {
+    backgroundColor: '#1b6ca8',
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginVertical: 8,
+    marginBottom: 12,
+    elevation: 2,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    letterSpacing: 0.5,
   },
 });

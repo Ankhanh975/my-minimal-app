@@ -32,7 +32,7 @@ class OrientationVisualize extends React.Component {
     }
     render() {
         let temp = this.yprToUnitVector(
-            this.props.x, this.props.y, this.props.z
+            this.props.y, this.props.x, this.props.z
         );
         return (
             <VectorVisualize {...temp}></VectorVisualize>

@@ -1,7 +1,8 @@
-import { Platform, Text, View, StyleSheet, ScrollView, Pressable, ActivityIndicator } from 'react-native';
+import { Platform, Text, View, StyleSheet, ScrollView, Pressable, ActivityIndicator, TouchableOpacity} from 'react-native';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
 import React from 'react';
+import GPSGuideModal from './GPSGuideModal'; // Import the guide modal if needed
 
 export default class GPS extends React.Component {
     timeoutId = null;
@@ -14,6 +15,7 @@ export default class GPS extends React.Component {
             loading: false,
             address: null,
             timestampStale: false, // Track if timestamp is stale
+            showGuide: false, // <-- add this
         };
     }
 
@@ -127,74 +129,6 @@ export default class GPS extends React.Component {
         // Use red if stale, normal color otherwise
         const timestampColor = timestampStale ? '#ff4136' : '#1b6ca8';
 
-        const guideLines = `
-📍 GPS ACCURACY GUIDE
-
-🎯 LOCATION ACCURACY
-• Excellent: ±1-3 meters (open sky, clear view)
-• Good: ±3-5 meters (urban areas, some obstructions)
-• Fair: ±5-10 meters (dense urban, heavy tree cover)
-• Poor: ±10+ meters (indoor, underground, tunnels)
-
-📊 ALTITUDE ACCURACY
-• GPS altitude is less accurate than horizontal position
-• Typical accuracy: ±10-20 meters (vs ±3-5m horizontal)
-• Barometric sensors improve altitude accuracy
-• Elevation data may vary by ±15-30 meters
-
-🚗 SPEED ACCURACY
-• Excellent: ±0.5-1 km/h (constant movement)
-• Good: ±1-2 km/h (variable speed)
-• Poor: ±2-5 km/h (slow movement, stops/starts)
-• Speed below 2 km/h may show as 0
-
-📡 SATELLITE SIGNAL STRENGTH (dB-Hz)
-• Excellent: 40+ dB-Hz (strong, clear signal)
-• Good: 30-40 dB-Hz (reliable positioning)
-• Fair: 20-30 dB-Hz (usable, may be less accurate)
-• Poor: <20 dB-Hz (weak, unreliable)
-
-📈 OPTIMAL SATELLITE CONDITIONS
-• Minimum satellites: 4 for basic positioning
-• Good positioning: 6-8 satellites
-• Excellent positioning: 8+ satellites
-• Multi-constellation: Better accuracy and reliability
-
-🌍 FACTORS AFFECTING ACCURACY
-• Atmospheric conditions (ionosphere, troposphere)
-• Satellite geometry (HDOP, VDOP, PDOP)
-• Multipath interference (buildings, trees)
-• Device hardware quality
-• Environmental obstructions
-
-⚡ REAL-TIME ACCURACY INDICATORS
-• "Used" satellites: Actually contributing to position fix
-• "Strong" signals: >30 dB-Hz, high-quality data
-• First Fix Time: Time to acquire initial position
-• GNSS Status: System operational state
-
-🔧 IMPROVING ACCURACY
-• Clear view of sky (minimize obstructions)
-• Wait for more satellites to acquire
-• Stay stationary for initial fix
-• Use high-accuracy mode
-• Enable all available constellations
-
-📱 DEVICE-SPECIFIC CONSIDERATIONS
-• Modern phones support multiple constellations
-• Hardware quality varies between devices
-• Some devices have barometric sensors
-• Antenna quality affects signal reception
-• Software algorithms improve accuracy
-
-⚠️ LIMITATIONS
-• Indoor positioning is unreliable
-• Urban canyons reduce accuracy
-• Weather can affect signal quality
-• Battery optimization may reduce update frequency
-• Some features require clear sky view
-`.trim().split('\n');
-
         return (
             // <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.container}>  
@@ -245,15 +179,19 @@ export default class GPS extends React.Component {
                     <Text style={styles.waiting}>Waiting for location...</Text>
                 ) : null}
 
-                {/* Guide text after the card */}
-                <Text style={styles.guide}>
-                    {guideLines.map((line, idx) => (
-                        <Text key={idx}>
-                            {line}
-                            {'\n'}
-                        </Text>
-                    ))}
-                </Text>
+                    
+                <TouchableOpacity
+                     style={styles.guideButton}
+                     onPress={() => this.setState({ showGuide: true })}
+                >
+                     <Text style={styles.guideButtonText}>Show GPS Guide</Text>
+                </TouchableOpacity>
+
+                <GPSGuideModal
+                    visible={this.state.showGuide}
+                    onClose={() => this.setState({ showGuide: false })}
+                ></GPSGuideModal>
+
            </View> 
         //</ScrollView>
         );
@@ -324,5 +262,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8f8ff',
         borderRadius: 8,
         lineHeight: 20,
+    },
+    guideButton: {
+        backgroundColor: '#1b6ca8',
+        paddingVertical: 10,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        marginTop: 18,
+        marginBottom: 8,
+        alignSelf: 'center',
+        elevation: 2,
+    },
+    guideButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+        letterSpacing: 0.5,
     },
 });
