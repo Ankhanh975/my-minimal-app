@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "expo": "~53.0.12",
+    "expo-dev-client": "~5.2.1",
     "expo-device": "~7.1.4",
     "expo-gl": "~15.1.6",
     "expo-location": "~18.1.5",
@@ -19,7 +20,7 @@
     "react": "19.0.0",
     "react-native": "0.79.4",
     "react-native-sensors": "^7.3.6",
-    "three": "^0.177.0"
+    "three": "^0.166.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
