@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "my-minimal-app",
+    "slug": "my-minimal-app",
+    "version": "1.0.0",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f6593d0e-eb9f-47e4-aa62-d50cb3606e20"
+      }
+    }
+  }
+}
