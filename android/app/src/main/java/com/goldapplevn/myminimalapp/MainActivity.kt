@@ -1,4 +1,4 @@
-package com.myminimalapp
+package com.goldapplevn.myminimalapp
 
 import android.os.Build
 import android.os.Bundle

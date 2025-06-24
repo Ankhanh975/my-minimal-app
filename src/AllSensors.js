@@ -68,7 +68,6 @@ export default class AllSensors extends React.Component {
     // Magnitudes
     const accelMag = Math.sqrt(ax * ax + ay * ay + az * az);
     const accelGravityMag = Math.sqrt(agx * agx + agy * agy + agz * agz);
-    const rotationMag = Math.sqrt((relAlpha * 57.2958) ** 2 + (relBeta * 57.2958) ** 2 + (relGamma * 57.2958) ** 2);
     const rotationRateMag = Math.sqrt((rAlpha * 57.2958) ** 2 + (rBeta * 57.2958) ** 2 + (rGamma * 57.2958) ** 2);
 
     // Magnetometer logic
@@ -86,13 +85,19 @@ export default class AllSensors extends React.Component {
         <Text style={styles.title}>📍 Sensor Data</Text>
         <View style={styles.card}>
           <Text style={styles.sectionHeader}>Acceleration (m/s²): </Text>
-          <Text style={styles.label}>x: <Text style={styles.value}>{ax.toFixed(2)}</Text></Text>
-          <Text style={styles.label}>y: <Text style={styles.value}>{ay.toFixed(2)}</Text></Text>
-          <Text style={styles.label}>z: <Text style={styles.value}>{az.toFixed(2)}</Text></Text>
-          <VectorVisualize x={ax} y={ay} z={az} />
-          <Text style={styles.label}>
-            Magnitude: <Text style={styles.value}>{accelMag.toFixed(2)}</Text>
-          </Text>
+          <View style={styles.rowContainer}>
+            <View style={styles.leftColumn}>
+              <Text style={styles.label}>x: <Text style={styles.value}>{ax.toFixed(2)}</Text></Text>
+              <Text style={styles.label}>y: <Text style={styles.value}>{ay.toFixed(2)}</Text></Text>
+              <Text style={styles.label}>z: <Text style={styles.value}>{az.toFixed(2)}</Text></Text>
+              <Text style={styles.label}>
+                Magnitude: <Text style={styles.value}>{accelMag.toFixed(2)}</Text>
+              </Text>
+            </View>
+            <View style={styles.rightColumn}>
+              <VectorVisualize x={ax} y={ay} z={az} />
+            </View>
+          </View>
 
           <Text style={styles.sectionHeader}>Acceleration + Gravity (m/s²): </Text>
           <Text style={styles.label}>x: <Text style={styles.value}>{agx.toFixed(2)}</Text></Text>
@@ -103,45 +108,63 @@ export default class AllSensors extends React.Component {
           </Text>
 
           <Text style={styles.sectionHeader}>Rotation (degrees, relative): </Text>
-          <TouchableOpacity style={styles.button} onPress={this.handleResetRotation}>
-            <Text style={styles.buttonText}>Reset Rotation</Text>
-          </TouchableOpacity>
-          <Text style={styles.label}>α: <Text style={styles.value}>{(relAlpha * 57.2958).toFixed(2)}°</Text></Text>
-          <Text style={styles.label}>β: <Text style={styles.value}>{(relBeta * 57.2958).toFixed(2)}°</Text></Text>
-          <Text style={styles.label}>γ: <Text style={styles.value}>{(relGamma * 57.2958).toFixed(2)}°</Text></Text>
-          <OrientationVisualize x={relAlpha} y={relBeta} z={relGamma} />
+          <View style={styles.rowContainer}>
+            <View style={styles.leftColumn}>
+              <TouchableOpacity style={styles.button} onPress={this.handleResetRotation}>
+                <Text style={styles.buttonText}>Reset Rotation</Text>
+              </TouchableOpacity>
+              <Text style={styles.label}>α: <Text style={styles.value}>{(relAlpha * 57.2958).toFixed(2)}°</Text></Text>
+              <Text style={styles.label}>β: <Text style={styles.value}>{(relBeta * 57.2958).toFixed(2)}°</Text></Text>
+              <Text style={styles.label}>γ: <Text style={styles.value}>{(relGamma * 57.2958).toFixed(2)}°</Text></Text>
+            </View>
+            <View style={styles.rightColumn}>
+              <OrientationVisualize x={relAlpha} y={relBeta} z={relGamma} />
+            </View>
+          </View>
 
           <Text style={styles.sectionHeader}>Rotation Rate (degrees/s): </Text>
-          <Text style={styles.label}>α: <Text style={styles.value}>{(rAlpha * 57.2958).toFixed(2)}</Text></Text>
-          <Text style={styles.label}>β: <Text style={styles.value}>{(rBeta * 57.2958).toFixed(2)}</Text></Text>
-          <Text style={styles.label}>γ: <Text style={styles.value}>{(rGamma * 57.2958).toFixed(2)}</Text></Text>
-          <VectorVisualize x={rAlpha * 57.2958} y={rBeta * 57.2958} z={rGamma * 57.2958} />
-          <Text style={styles.label}>
-            Magnitude: <Text style={styles.value}>{rotationRateMag.toFixed(2)}</Text>
-          </Text>
+          <View style={styles.rowContainer}>
+            <View style={styles.leftColumn}>
+              <Text style={styles.label}>α: <Text style={styles.value}>{(rAlpha * 57.2958).toFixed(2)}</Text></Text>
+              <Text style={styles.label}>β: <Text style={styles.value}>{(rBeta * 57.2958).toFixed(2)}</Text></Text>
+              <Text style={styles.label}>γ: <Text style={styles.value}>{(rGamma * 57.2958).toFixed(2)}</Text></Text>
+              <Text style={styles.label}>
+                Magnitude: <Text style={styles.value}>{rotationRateMag.toFixed(2)}</Text>
+              </Text>
+            </View>
+            <View style={styles.rightColumn}>
+              <VectorVisualize x={rAlpha * 57.2958} y={rBeta * 57.2958} z={rGamma * 57.2958} />
+            </View>
+          </View>
 
           <Text style={styles.sectionHeader}>Orientation: <Text style={styles.value}>{orientation.toFixed(2)}</Text></Text>
 
-          <Text style={styles.sectionHeader}>Magnetometer (μT)</Text>
-          <Text style={styles.label}>
-            X: <Text style={styles.value}>{magX.toFixed(2)}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Y: <Text style={styles.value}>{magY.toFixed(2)}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Z: <Text style={styles.value}>{magZ.toFixed(2)}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Magnitude: <Text style={styles.value}>{magMagnitude.toFixed(2)}</Text>
-          </Text>
-          <VectorVisualize x={magX} y={magY} z={magZ} />
+          <Text style={styles.sectionHeader}>Magnenometer (μT)</Text>
+          <View style={styles.rowContainer}>
+            <View style={styles.leftColumn}>
+              <Text style={styles.label}>
+                x: <Text style={styles.value}>{magX.toFixed(2)}</Text>
+              </Text>
+              <Text style={styles.label}>
+                y: <Text style={styles.value}>{magY.toFixed(2)}</Text>
+              </Text>
+              <Text style={styles.label}>
+                z: <Text style={styles.value}>{magZ.toFixed(2)}</Text>
+              </Text>
+              <Text style={styles.label}>
+                Magnitude: <Text style={styles.value}>{magMagnitude.toFixed(2)}</Text>
+              </Text>
+            </View>
+            <View style={styles.rightColumn}>
+              <VectorVisualize x={magX} y={magY} z={magZ} />
+            </View>
+          </View>
 
-          <Text style={styles.sectionHeader}>Barometer (atm)</Text>
+          <Text style={styles.sectionHeader}>Barometer</Text>
           <Text style={styles.label}>
-            Pressure:
+            Pressure: 
             <Text style={styles.value}>
-              {barAtm} atm
+              {" " + barAtm} atm
             </Text>
           </Text>
         </View>
@@ -235,5 +258,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     letterSpacing: 0.5,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  leftColumn: {
+    flex: 2,
+    justifyContent: 'flex-start',
+  },
+  rightColumn: {
+    flex: 1,
+    alignItems: 'flex-end',
   },
 });

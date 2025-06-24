@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Platform, Text, View, StyleSheet, ScrollView } from 'react-native';
 import GPS from './GPS';
-import AllSensors from './AllSensors'; // Add this import
-import LightSensorComponent from './LightSensor'; // Import the LightSensor component
+import AllSensors from './AllSensors'; 
+import LightSensorComponent from './LightSensor'; 
+
 export default function App() {
    return (
     <View style={{ flex: 1}}>
@@ -20,10 +21,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',   
     backgroundColor: '#fff',  
-    paddingBottom: 50, // Add this line for bottom padding
-    // paddingTop: 500, // Add this line for bottom padding
+    paddingBottom: 50, 
+    // paddingTop: 500, 
   },
-  
   text: {
     fontSize: 20,
     color: '#333',

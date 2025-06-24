@@ -15,6 +15,13 @@
       "eas": {
         "projectId": "f6593d0e-eb9f-47e4-aa62-d50cb3606e20"
       }
+    },
+    "android": {
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.goldapplevn.myminimalapp"
     }
   }
 }
