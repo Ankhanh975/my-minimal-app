@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Magnetometer, Barometer, DeviceMotion } from 'expo-sensors';
 import { VectorVisualize, OrientationVisualize, MagnitudeVisualize } from './ThreeJS';
+import SensorGraph from './SensorGraph';
 
 export default class AllSensors extends React.Component {
   constructor() {
@@ -68,6 +69,8 @@ export default class AllSensors extends React.Component {
     // Magnitudes
     const accelMag = Math.sqrt(ax * ax + ay * ay + az * az);
     const accelGravityMag = Math.sqrt(agx * agx + agy * agy + agz * agz);
+    const accelMagG = accelMag / 9.80665;
+    const accelGravityMagG = accelGravityMag / 9.80665;
     const rotationRateMag = Math.sqrt((rAlpha * 57.2958) ** 2 + (rBeta * 57.2958) ** 2 + (rGamma * 57.2958) ** 2);
 
     // Magnetometer logic
@@ -79,6 +82,12 @@ export default class AllSensors extends React.Component {
     // Barometer logic
     const barPressure = bar.pressure ?? null;
     const barAtm = barPressure ? (barPressure / 1013.25).toFixed(4) : 'N/A';
+
+    const getGColor = (g) => {
+      if (g < 0.9) return styles.gLow;
+      if (g > 1.1) return styles.gHigh;
+      return styles.gNormal;
+    };
 
     return (
       <View style={styles.container}>
@@ -93,6 +102,10 @@ export default class AllSensors extends React.Component {
               <Text style={styles.label}>
                 Magnitude: <Text style={styles.value}>{accelMag.toFixed(2)}</Text>
               </Text>
+              <Text style={styles.label}>
+                Magnitude : <Text style={[styles.value, getGColor(accelMagG+1)]}>{accelMagG.toFixed(3)} (G)</Text>
+              </Text>
+            <SensorGraph data={accelMagG} label="Acceleration (last 10s)" />
             </View>
             <View style={styles.rightColumn}>
               <VectorVisualize x={ax} y={ay} z={az} />
@@ -105,6 +118,9 @@ export default class AllSensors extends React.Component {
           <Text style={styles.label}>z: <Text style={styles.value}>{agz.toFixed(2)}</Text></Text>
           <Text style={styles.label}>
             Magnitude: <Text style={styles.value}>{accelGravityMag.toFixed(2)}</Text>
+          </Text>
+          <Text style={styles.label}>
+            Magnitude: <Text style={[styles.value, getGColor(accelGravityMagG)]}>{accelGravityMagG.toFixed(3)} (G)</Text>
           </Text>
 
           <Text style={styles.sectionHeader}>Rotation (degrees, relative): </Text>
@@ -167,6 +183,7 @@ export default class AllSensors extends React.Component {
               {" " + barAtm} atm
             </Text>
           </Text>
+          
         </View>
         <Text style={styles.guide}>
           Note: The values are updated every 100ms. Ensure your device supports
@@ -272,5 +289,14 @@ const styles = StyleSheet.create({
   rightColumn: {
     flex: 1,
     alignItems: 'flex-end',
+  },
+  gLow: {
+    color: 'red',
+  },
+  gNormal: {
+    color: 'green',
+  },
+  gHigh: {
+    color: 'blue',
   },
 });

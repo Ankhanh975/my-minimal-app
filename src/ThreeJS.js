@@ -51,7 +51,7 @@ class MagnitudeVisualize extends React.Component {
  class VectorVisualize extends React.Component {
   // === CONSTANT PARAMETERS ===
   static CANVAS_SIZE = 115;
-  static AXIS_LENGTH = 3.4;
+  static AXIS_LENGTH = 2.0;
   static AXIS_LINE_WIDTH = 2.5;
   static ARROW_COLOR = 0x00ffff;
   static ARROW_HEAD_LENGTH = 0.4;
@@ -61,7 +61,7 @@ class MagnitudeVisualize extends React.Component {
   static CAMERA_NEAR = 0.1;
   static CAMERA_FAR = 1000;
   static CAMERA_POSITION = { x: 1.5*1.1, y: 2*1.1, z: 2.5*1.1 };
-  static CAMERA_Z_ROTATE = 0.8 * (Math.PI / 6); // 30 deg * 1.3
+  static CAMERA_Z_ROTATE = 1.02 * (Math.PI / 6); // 30 deg * 1.3
   static BG_COLOR = 0x222222;
 
   // Axis arrow head constants
