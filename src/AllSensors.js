@@ -141,15 +141,17 @@ export default class AllSensors extends React.Component {
           <Text style={styles.sectionHeader}>Rotation Rate (degrees/s): </Text>
           <View style={styles.rowContainer}>
             <View style={styles.leftColumn}>
-              <Text style={styles.label}>α: <Text style={styles.value}>{(rAlpha * 57.2958).toFixed(2)}</Text></Text>
-              <Text style={styles.label}>β: <Text style={styles.value}>{(rBeta * 57.2958).toFixed(2)}</Text></Text>
-              <Text style={styles.label}>γ: <Text style={styles.value}>{(rGamma * 57.2958).toFixed(2)}</Text></Text>
+              <Text style={styles.label}>α: <Text style={styles.value}>{(rAlpha * 57.2958).toFixed(0)} °/s</Text></Text>
+              <Text style={styles.label}>β: <Text style={styles.value}>{(rBeta * 57.2958).toFixed(0)} °/s</Text></Text>
+              <Text style={styles.label}>γ: <Text style={styles.value}>{(rGamma * 57.2958).toFixed(0)} °/s</Text></Text>
               <Text style={styles.label}>
                 Magnitude: <Text style={styles.value}>{rotationRateMag.toFixed(2)}</Text>
               </Text>
+            <SensorGraph data={rotationRateMag/1000.0} label="Rotation Rate (last 10s)" />
+
             </View>
             <View style={styles.rightColumn}>
-              <VectorVisualize x={rAlpha * 57.2958} y={rBeta * 57.2958} z={rGamma * 57.2958} />
+              <VectorVisualize x={rAlpha * 57.2958 / 1000} y={rBeta * 57.2958 / 1000} z={rGamma * 57.2958 / 1000} />
             </View>
           </View>
 
