@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Magnetometer, Barometer, DeviceMotion } from 'expo-sensors';
 import { VectorVisualize, OrientationVisualize, MagnitudeVisualize } from './ThreeJS';
-import SensorGraph from './SensorGraph';
+// import SensorGraph from './SensorGraph';
 
 export default class AllSensors extends React.Component {
   constructor() {
@@ -105,7 +105,7 @@ export default class AllSensors extends React.Component {
               <Text style={styles.label}>
                 Magnitude : <Text style={[styles.value, getGColor(accelMagG+1)]}>{accelMagG.toFixed(3)} (G)</Text>
               </Text>
-            <SensorGraph data={accelMagG} label="Acceleration (last 10s)" />
+            {/* <SensorGraph data={accelMagG} label="Acceleration (last 10s)" /> */}
             </View>
             <View style={styles.rightColumn}>
               <VectorVisualize x={ax} y={ay} z={az} />
@@ -147,7 +147,7 @@ export default class AllSensors extends React.Component {
               <Text style={styles.label}>
                 Magnitude: <Text style={styles.value}>{rotationRateMag.toFixed(2)}</Text>
               </Text>
-            <SensorGraph data={rotationRateMag/1000.0} label="Rotation Rate (last 10s)" />
+            {/* <SensorGraph data={rotationRateMag/1000.0} label="Rotation Rate (last 10s)" /> */}
 
             </View>
             <View style={styles.rightColumn}>
