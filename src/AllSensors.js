@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Magnetometer, Barometer, DeviceMotion } from 'expo-sensors';
 import { VectorVisualize, OrientationVisualize, MagnitudeVisualize } from './ThreeJS';
-// import SensorGraph from './SensorGraph';
+// import { MinimalGraph } from './SensorGraph';
 
 export default class AllSensors extends React.Component {
   constructor() {
@@ -12,7 +12,7 @@ export default class AllSensors extends React.Component {
       bar: { pressure: 0 },
       deviceMotion: {
         acceleration: { x: 0, y: 0, z: 0 },
-        accelerationIncludingGravity: { x: 0, y: 0, z: 0 },
+        accelerationOfGravity: { x: 0, y: 0, z: 0 },
         rotation: { alpha: 0, beta: 0, gamma: 0 },
         rotationRate: { alpha: 0, beta: 0, gamma: 0 },
         orientation: 0,
@@ -56,7 +56,7 @@ export default class AllSensors extends React.Component {
   render() {
     const { mag, bar, deviceMotion, rotationOffset } = this.state;
     const { x: ax = 0, y: ay = 0, z: az = 0 } = deviceMotion.acceleration || {};
-    const { x: agx = 0, y: agy = 0, z: agz = 0 } = deviceMotion.accelerationIncludingGravity || {};
+    let { x: agx = 0, y: agy = 0, z: agz = 0 } = deviceMotion.accelerationOfGravity || {};
     const { alpha = 0, beta = 0, gamma = 0 } = deviceMotion.rotation || {};
     const { alpha: rAlpha = 0, beta: rBeta = 0, gamma: rGamma = 0 } = deviceMotion.rotationRate || {};
     const orientation = deviceMotion.orientation ?? 0;
@@ -65,6 +65,10 @@ export default class AllSensors extends React.Component {
     const relAlpha = alpha - (rotationOffset.alpha || 0);
     const relBeta = beta - (rotationOffset.beta || 0);
     const relGamma = gamma - (rotationOffset.gamma || 0);
+
+    agx = agx + ax;
+    agy = agy + ay;
+    agz = agz + az;
 
     // Magnitudes
     const accelMag = Math.sqrt(ax * ax + ay * ay + az * az);
@@ -105,14 +109,14 @@ export default class AllSensors extends React.Component {
               <Text style={styles.label}>
                 Magnitude : <Text style={[styles.value, getGColor(accelMagG+1)]}>{accelMagG.toFixed(3)} (G)</Text>
               </Text>
-            {/* <SensorGraph data={accelMagG} label="Acceleration (last 10s)" /> */}
+            {/* <MinimalGraph data={accelMagG} label="Acceleration (last 10s)" /> */}
             </View>
             <View style={styles.rightColumn}>
               <VectorVisualize x={ax} y={ay} z={az} />
             </View>
           </View>
 
-          <Text style={styles.sectionHeader}>Acceleration + Gravity (m/s²): </Text>
+          <Text style={styles.sectionHeader}>Gravity (m/s²): </Text>
           <Text style={styles.label}>x: <Text style={styles.value}>{agx.toFixed(2)}</Text></Text>
           <Text style={styles.label}>y: <Text style={styles.value}>{agy.toFixed(2)}</Text></Text>
           <Text style={styles.label}>z: <Text style={styles.value}>{agz.toFixed(2)}</Text></Text>
@@ -122,6 +126,8 @@ export default class AllSensors extends React.Component {
           <Text style={styles.label}>
             Magnitude: <Text style={[styles.value, getGColor(accelGravityMagG)]}>{accelGravityMagG.toFixed(3)} (G)</Text>
           </Text>
+          {/* <MinimalGraph data={accelGravityMagG} label="Gravity (G) (last 10s)" /> */}
+
 
           <Text style={styles.sectionHeader}>Rotation (degrees, relative): </Text>
           <View style={styles.rowContainer}>
@@ -147,7 +153,7 @@ export default class AllSensors extends React.Component {
               <Text style={styles.label}>
                 Magnitude: <Text style={styles.value}>{rotationRateMag.toFixed(2)}</Text>
               </Text>
-            {/* <SensorGraph data={rotationRateMag/1000.0} label="Rotation Rate (last 10s)" /> */}
+            {/* <MinimalGraph data={rotationRateMag/1000.0} label="Rotation Rate (last 10s)" /> */}
 
             </View>
             <View style={styles.rightColumn}>
@@ -302,3 +308,62 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
 });
+
+// A component that displays a line graph of the latest 25 datapoints, updating every 100ms from props.data
+class GiftedLiveLineGraph extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataPoints: [],
+    };
+    this.interval = null;
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.setState((prevState) => {
+        const newData = [...prevState.dataPoints, this.props.data];
+        if (newData.length > 25) newData.shift();
+        return { dataPoints: newData };
+      });
+    }, 100);
+  }
+
+  componentWillUnmount() {
+    if (this.interval) clearInterval(this.interval);
+  }
+
+  componentDidUpdate(prevProps) {
+    // If the data prop changes, add it to the array
+    if (prevProps.data !== this.props.data) {
+      this.setState((prevState) => {
+        const newData = [...prevState.dataPoints, this.props.data];
+        if (newData.length > 25) newData.shift();
+        return { dataPoints: newData };
+      });
+    }
+  }
+
+  render() {
+    // Prepare data for LineChart
+    const chartData = this.state.dataPoints.map((y, i) => ({ value: y, label: '' }));
+    return (
+      <View style={{ height: 120, marginVertical: 8 }}>
+        <LineChart
+          data={chartData}
+          thickness={2}
+          color="#1b6ca8"
+          hideDataPoints={false}
+          hideRules={true}
+          yAxisColor="#ccc"
+          xAxisColor="#ccc"
+          noOfSections={3}
+          isAnimated
+          yAxisOffset={0}
+          yAxisMinValue={0}
+          yAxisMaxValue={2}
+        />
+      </View>
+    );
+  }
+}

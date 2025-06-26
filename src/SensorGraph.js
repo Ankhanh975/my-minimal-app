@@ -1,93 +1,60 @@
-import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { BarChart, YAxis } from 'react-native-svg-charts';
+// use react-native-gifted-charts and make a new class in this file. 
+// The class is a react component that every 100ms change props, 
+// props has a float of call props.data. Make a line graph of 
+// the nearest 25 datapoints
+import { LineChart } from 'react-native-gifted-charts';
+import { View, Text } from 'react-native';
+import React from 'react';  
 
-const MAX_POINTS = 25;
-const Y_MIN = 0;
-const Y_MAX = 2;
+function MinimalGraph(props) {
+  return (
+    <View style={{ height: 120, marginVertical: 8 }}>
+      <LineChart
+        data={[props.data]}
+      />
+    </View>
+  );
+}
 
-export default class SensorGraph extends Component {
-  constructor(props) {
-    super(props);
-    this.history = Array(MAX_POINTS).fill(0);
-    this.lastValue = undefined;
+// A component that displays a line graph of the latest 25 datapoints, 
+// updating every 100ms from props.data
+class SensorGraph extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      dataPoints: Array(25).fill(0),
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    // If the data prop changes, add it to the array
+    if (prevProps.data !== this.props.data) {
+      this.setState((prevState) => {
+        const newData = [...prevState.dataPoints, this.props.data];
+        if (newData.length > 25) newData.shift();
+        return { dataPoints: newData };
+      });
+    }
   }
 
   render() {
-    const { data } = this.props;
-
-    // Only push new value if it changed, and clip to [Y_MIN, Y_MAX]
-    if (typeof data === 'number' && data !== this.lastValue) {
-      const clipped = Math.max(Y_MIN, Math.min(Y_MAX, data));
-      this.history.push(clipped);
-      if (this.history.length > MAX_POINTS) {
-        this.history.shift();
-      }
-      this.lastValue = data;
-    }
-
+    // Prepare data for LineChart
+    const chartData = this.state.dataPoints.map((y, i) => ({ value: y, label: '' }));
     return (
-      <View style={styles.outer}>
-        <View style={styles.chartRow}>
-          <YAxis
-            data={this.history}
-            contentInset={{ top: 16, bottom: 16 }}
-            svg={{ fontSize: 12, fill: '#888' }}
-            numberOfTicks={5}
-            style={styles.yAxis}
-            min={Y_MIN}
-            max={Y_MAX}
-          />
-          <View style={styles.chartContainer}>
-            <BarChart
-              style={styles.chart}
-              data={this.history}
-              svg={{ fill: '#aa00ff', rx: 6, ry: 6 }}
-              spacingInner={0.2}
-              contentInset={{ top: 16, bottom: 16, left: 8, right: 8 }}
-              showGrid={true}
-              yMin={Y_MIN}
-              gridMin={0}
-              gridMax={Y_MAX}
-              yMax={Y_MAX}
-            />
-          </View>
-        </View>
+      <View style={{ height: 120, marginVertical: 8 }}>
+        <LineChart
+          data={chartData}
+          thickness={2}
+          color="#1b6ca8"
+          hideDataPoints={false}
+          hideRules={true}
+          yAxisColor="#ccc"
+          xAxisColor="#ccc"
+          noOfSections={3}
+          isAnimated
+        />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  outer: {
-    marginVertical: 16,
-    alignItems: 'stretch',
-    width: 200,  
-    height: 100,  
-  },
-  chartRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  yAxis: {
-    width: 32,
-    marginRight: 2,
-    height: 100,
-  },
-  chartContainer: {
-    backgroundColor: '#f8f4ff',
-    borderRadius: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    shadowColor: '#8800cc',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
-    flex: 1,
-  },
-  chart: {
-    height: 100,
-    borderRadius: 12,
-  },
-});
-
+export {SensorGraph, MinimalGraph}
